@@ -1140,4 +1140,7 @@
         all of the currently visible notifications. [CHAR LIMIT=10]-->
     <string name="clear_recents">Close all recent</string>
 
+    <!-- Quick Settings -->
+    <string name="quick_settings_screenshot">Screenshot</string>
+
 </resources>
