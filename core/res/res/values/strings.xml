@@ -4109,4 +4109,7 @@
         <item quantity="one"><xliff:g id="count" example="1">%1$d</xliff:g> selected</item>
         <item quantity="other"><xliff:g id="count" example="3">%1$d</xliff:g> selected</item>
     </plurals>
+
+    <string name="silent_mode_priority">Priority</string>
+    <string name="silent_mode_none">None</string>
 </resources>
