@@ -421,8 +421,7 @@ public class RenderSessionImpl extends RenderAction<SessionParams> {
                     gc.setComposite(AlphaComposite.Src);
 
                     gc.setColor(new Color(0x00000000, true));
-                    gc.fillRect(0, 0,
-                            mMeasuredScreenWidth, mMeasuredScreenHeight);
+                    gc.fillRect(0, 0, mMeasuredScreenWidth, mMeasuredScreenHeight);
 
                     // done
                     gc.dispose();
@@ -1051,11 +1050,7 @@ public class RenderSessionImpl extends RenderAction<SessionParams> {
             }
             if (scrollPos != 0) {
                 view.scrollBy(0, scrollPos);
-            } else {
-                view.scrollBy(0, scrollPos);
             }
-        } else {
-            view.scrollBy(0, scrollPos);
         }
 
         if (!(view instanceof ViewGroup)) {

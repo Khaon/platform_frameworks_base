@@ -444,7 +444,8 @@ public class GpsLocationProvider implements LocationProviderInterface {
                 checkSmsSuplInit(intent);
             } else if (action.equals(Intents.WAP_PUSH_RECEIVED_ACTION)) {
                 checkWapSuplInit(intent);
-            } else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+            } else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)
+                    || action.equals(ConnectivityManager.CONNECTIVITY_ACTION_SUPL)) {
                 // retrieve NetworkInfo result for this UID
                 NetworkInfo info =
                         intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
@@ -766,6 +767,10 @@ public class GpsLocationProvider implements LocationProviderInterface {
                 && mAGpsDataConnectionState == AGPS_DATA_CONNECTION_OPENING) {
             if (mNetworkAvailable) {
                 String apnName = info.getExtraInfo();
+                // APN wasn't found in the intent, try to get it from the content provider.
+                if (apnName == null) {
+                    apnName = getSelectedApn();
+                }
                 if (apnName == null) {
                     /* Assign a dummy value in the case of C2K as otherwise we will have a runtime
                     exception in the following call to native_agps_data_conn_open*/
@@ -2045,6 +2050,7 @@ public class GpsLocationProvider implements LocationProviderInterface {
             intentFilter.addAction(ALARM_WAKEUP);
             intentFilter.addAction(ALARM_TIMEOUT);
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION_SUPL);
             intentFilter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
             intentFilter.addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED);
             intentFilter.addAction(Intent.ACTION_SCREEN_OFF);

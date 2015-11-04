@@ -602,6 +602,46 @@ public class TelephonyManager {
     public static final String EXTRA_DATA_FAILURE_CAUSE = PhoneConstants.DATA_FAILURE_CAUSE_KEY;
 
     /**
+     * Broadcast intent action for letting custom component know to show voicemail notification.
+     * @hide
+     */
+    @SystemApi
+    public static final String ACTION_SHOW_VOICEMAIL_NOTIFICATION =
+            "android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION";
+
+    /**
+     * The number of voice messages associated with the notification.
+     * @hide
+     */
+    @SystemApi
+    public static final String EXTRA_NOTIFICATION_COUNT =
+            "android.telephony.extra.NOTIFICATION_COUNT";
+
+    /**
+     * The voicemail number.
+     * @hide
+     */
+    @SystemApi
+    public static final String EXTRA_VOICEMAIL_NUMBER =
+            "android.telephony.extra.VOICEMAIL_NUMBER";
+
+    /**
+     * The intent to call voicemail.
+     * @hide
+     */
+    @SystemApi
+    public static final String EXTRA_CALL_VOICEMAIL_INTENT =
+            "android.telephony.extra.CALL_VOICEMAIL_INTENT";
+
+    /**
+     * The intent to launch voicemail settings.
+     * @hide
+     */
+    @SystemApi
+    public static final String EXTRA_LAUNCH_VOICEMAIL_SETTINGS_INTENT =
+            "android.telephony.extra.LAUNCH_VOICEMAIL_SETTINGS_INTENT";
+
+    /**
      * Response codes for sim activation. Activation completed successfully.
      * @hide
      */
@@ -1059,11 +1099,21 @@ public class TelephonyManager {
         case RILConstants.NETWORK_MODE_LTE_GSM_WCDMA:
         case RILConstants.NETWORK_MODE_LTE_WCDMA:
         case RILConstants.NETWORK_MODE_LTE_CDMA_EVDO_GSM_WCDMA:
+        case RILConstants.NETWORK_MODE_TDSCDMA_ONLY:
+        case RILConstants.NETWORK_MODE_TDSCDMA_WCDMA:
+        case RILConstants.NETWORK_MODE_LTE_TDSCDMA:
+        case RILConstants.NETWORK_MODE_TDSCDMA_GSM:
+        case RILConstants.NETWORK_MODE_LTE_TDSCDMA_GSM:
+        case RILConstants.NETWORK_MODE_TDSCDMA_GSM_WCDMA:
+        case RILConstants.NETWORK_MODE_LTE_TDSCDMA_WCDMA:
+        case RILConstants.NETWORK_MODE_LTE_TDSCDMA_GSM_WCDMA:
+        case RILConstants.NETWORK_MODE_LTE_TDSCDMA_CDMA_EVDO_GSM_WCDMA:
             return PhoneConstants.PHONE_TYPE_GSM;
 
         // Use CDMA Phone for the global mode including CDMA
         case RILConstants.NETWORK_MODE_GLOBAL:
         case RILConstants.NETWORK_MODE_LTE_CDMA_EVDO:
+        case RILConstants.NETWORK_MODE_TDSCDMA_CDMA_EVDO_GSM_WCDMA:
             return PhoneConstants.PHONE_TYPE_CDMA;
 
         case RILConstants.NETWORK_MODE_LTE_ONLY:
@@ -3561,11 +3611,12 @@ public class TelephonyManager {
      *
      * @hide
      */
-    public boolean setNetworkSelectionModeManual(int subId, OperatorInfo operator) {
+    public boolean setNetworkSelectionModeManual(int subId, OperatorInfo operator,
+            boolean persistSelection) {
         try {
             ITelephony telephony = getITelephony();
             if (telephony != null)
-                return telephony.setNetworkSelectionModeManual(subId, operator);
+                return telephony.setNetworkSelectionModeManual(subId, operator, persistSelection);
         } catch (RemoteException ex) {
             Rlog.e(TAG, "setNetworkSelectionModeManual RemoteException", ex);
         } catch (NullPointerException ex) {
@@ -4352,13 +4403,13 @@ public class TelephonyManager {
        }
    }
 
-   /**
-    * Returns the Status of Volte
-    *@hide
-    */
-   public boolean isVolteEnabled() {
+    /**
+     * Returns the Status of Volte
+     * @hide
+     */
+    public boolean isVolteAvailable() {
        try {
-           return getITelephony().isVolteEnabled();
+           return getITelephony().isVolteAvailable();
        } catch (RemoteException ex) {
            return false;
        } catch (NullPointerException ex) {
@@ -4366,13 +4417,27 @@ public class TelephonyManager {
        }
    }
 
-   /**
-    * Returns the Status of Wi-Fi Calling
-    *@hide
-    */
-   public boolean isWifiCallingEnabled() {
+    /**
+     * Returns the Status of video telephony (VT)
+     * @hide
+     */
+    public boolean isVideoTelephonyAvailable() {
+        try {
+            return getITelephony().isVideoTelephonyAvailable();
+        } catch (RemoteException ex) {
+            return false;
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the Status of Wi-Fi Calling
+     * @hide
+     */
+    public boolean isWifiCallingAvailable() {
        try {
-           return getITelephony().isWifiCallingEnabled();
+           return getITelephony().isWifiCallingAvailable();
        } catch (RemoteException ex) {
            return false;
        } catch (NullPointerException ex) {

@@ -253,6 +253,10 @@
   <java-symbol type="bool" name="config_cellBroadcastAppLinks" />
   <java-symbol type="bool" name="config_duplicate_port_omadm_wappush" />
   <java-symbol type="bool" name="config_enableAutoPowerModes" />
+  <java-symbol type="integer" name="config_autoPowerModeThresholdAngle" />
+  <java-symbol type="integer" name="config_autoPowerModeAnyMotionSensor" />
+  <java-symbol type="bool" name="config_autoPowerModePreferWristTilt" />
+  <java-symbol type="bool" name="config_autoPowerModePrefetchLocation" />
   <java-symbol type="bool" name="config_enable_emergency_call_while_sim_locked" />
   <java-symbol type="bool" name="config_enable_puk_unlock_screen" />
   <java-symbol type="bool" name="config_enableBurnInProtection" />
@@ -301,6 +305,8 @@
   <java-symbol type="bool" name="config_wifi_only_link_same_credential_configurations" />
   <java-symbol type="bool" name="config_wifi_enable_disconnection_debounce" />
   <java-symbol type="bool" name="config_wifi_enable_5GHz_preference" />
+  <java-symbol type="bool" name="config_wifi_revert_country_code_on_cellular_loss" />
+  <java-symbol type="bool" name="config_wifi_enable_wifi_firmware_debugging" />
   <java-symbol type="bool" name="config_supportMicNearUltrasound" />
   <java-symbol type="bool" name="config_supportSpeakerNearUltrasound" />
   <java-symbol type="integer" name="config_wifi_framework_5GHz_preference_boost_threshold" />
@@ -403,6 +409,7 @@
   <java-symbol type="integer" name="config_volte_replacement_rat"/>
   <java-symbol type="integer" name="config_valid_wappush_index" />
   <java-symbol type="integer" name="config_overrideHasPermanentMenuKey" />
+  <java-symbol type="integer" name="config_mdc_initial_max_retry" />
   <java-symbol type="bool" name="config_hasPermanentDpad" />
 
   <java-symbol type="color" name="tab_indicator_text_v4" />
@@ -1130,6 +1137,7 @@
   <java-symbol type="array" name="config_telephonyHardware" />
   <java-symbol type="array" name="config_keySystemUuidMapping" />
   <java-symbol type="array" name="config_gpsParameters" />
+  <java-symbol type="array" name="config_colorTransforms" />
 
   <java-symbol type="drawable" name="default_wallpaper" />
   <java-symbol type="drawable" name="indicator_input_error" />
@@ -1550,6 +1558,7 @@
   <java-symbol type="string" name="bugreport_title" />
   <java-symbol type="string" name="bugreport_message" />
   <java-symbol type="string" name="bugreport_status" />
+  <java-symbol type="string" name="config_orientationSensorType" />
   <java-symbol type="string" name="faceunlock_multiple_failures" />
   <java-symbol type="string" name="global_action_power_off" />
   <java-symbol type="string" name="global_action_reboot" />
@@ -1631,6 +1640,7 @@
   <java-symbol type="bool" name="config_enableNetworkLocationOverlay" />
   <java-symbol type="bool" name="config_sf_limitedAlpha" />
   <java-symbol type="bool" name="config_unplugTurnsOnScreen" />
+  <java-symbol type="bool" name="config_usbChargingMessage" />
   <java-symbol type="bool" name="config_allowAutoBrightnessWhileDozing" />
   <java-symbol type="bool" name="config_allowTheaterModeWakeFromUnplug" />
   <java-symbol type="bool" name="config_allowTheaterModeWakeFromGesture" />
@@ -2197,6 +2207,7 @@
   <java-symbol type="bool" name="config_sms_force_7bit_encoding" />
   <java-symbol type="bool" name="config_defaultWindowFeatureOptionsPanel" />
   <java-symbol type="bool" name="config_defaultWindowFeatureContextMenu" />
+  <java-symbol type="bool" name="config_overrideRemoteViewsActivityTransition" />
 
   <java-symbol type="layout" name="simple_account_item" />
   <java-symbol type="array" name="config_sms_convert_destination_number_support" />
@@ -2322,6 +2333,11 @@
   <java-symbol type="array" name="config_cell_retries_per_error_code" />
   <java-symbol type="drawable" name="ic_more_items" />
 
-  <java-symbol type="drawable" name="platlogo_m" />
+  <!-- Gesture -->
+  <java-symbol type="integer" name="config_cameraLaunchGestureSensorType" />
+  <java-symbol type="string" name="config_cameraLaunchGestureSensorStringType" />
+  <java-symbol type="bool" name="config_cameraDoubleTapPowerGestureEnabled" />
 
+  <java-symbol type="string" name="config_networkPolicyNotificationComponent" />
+  <java-symbol type="drawable" name="platlogo_m" />
 </resources>

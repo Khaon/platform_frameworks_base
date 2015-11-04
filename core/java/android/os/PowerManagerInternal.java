@@ -53,6 +53,15 @@ public abstract class PowerManagerInternal {
      */
     public static final int WAKEFULNESS_DOZING = 3;
 
+
+    /**
+     * Power hint: The user is interacting with the device. The corresponding data field must be
+     * the expected duration of the fling, or 0 if unknown.
+     *
+     * This must be kept in sync with the values in hardware/libhardware/include/hardware/power.h
+     */
+    public static final int POWER_HINT_INTERACTION = 2;
+
     public static String wakefulnessToString(int wakefulness) {
         switch (wakefulness) {
             case WAKEFULNESS_ASLEEP:
@@ -108,6 +117,12 @@ public abstract class PowerManagerInternal {
     public abstract void setUserActivityTimeoutOverrideFromWindowManager(long timeoutMillis);
 
     /**
+     * Used by the window manager to tell the power manager that the user is no longer actively
+     * using the device.
+     */
+    public abstract void setUserInactiveOverrideFromWindowManager();
+
+    /**
      * Used by device administration to set the maximum screen off timeout.
      *
      * This method must only be called by the device administration policy manager.
@@ -142,4 +157,6 @@ public abstract class PowerManagerInternal {
     public abstract void updateUidProcState(int uid, int procState);
 
     public abstract void uidGone(int uid);
+
+    public abstract void powerHint(int hintId, int data);
 }

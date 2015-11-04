@@ -101,6 +101,7 @@ public abstract class ConnectionService extends Service {
     private static final int MSG_ANSWER_VIDEO = 17;
     private static final int MSG_MERGE_CONFERENCE = 18;
     private static final int MSG_SWAP_CONFERENCE = 19;
+    private static final int MSG_REJECT_WITH_MESSAGE = 20;
 
     private static Connection sNullConnection;
 
@@ -163,6 +164,14 @@ public abstract class ConnectionService extends Service {
         @Override
         public void reject(String callId) {
             mHandler.obtainMessage(MSG_REJECT, callId).sendToTarget();
+        }
+
+        @Override
+        public void rejectWithMessage(String callId, String message) {
+            SomeArgs args = SomeArgs.obtain();
+            args.arg1 = callId;
+            args.arg2 = message;
+            mHandler.obtainMessage(MSG_REJECT_WITH_MESSAGE, args).sendToTarget();
         }
 
         @Override
@@ -296,6 +305,15 @@ public abstract class ConnectionService extends Service {
                 case MSG_REJECT:
                     reject((String) msg.obj);
                     break;
+                case MSG_REJECT_WITH_MESSAGE: {
+                    SomeArgs args = (SomeArgs) msg.obj;
+                    try {
+                        reject((String) args.arg1, (String) args.arg2);
+                    } finally {
+                        args.recycle();
+                    }
+                    break;
+                }
                 case MSG_DISCONNECT:
                     disconnect((String) msg.obj);
                     break;
@@ -656,6 +674,9 @@ public abstract class ConnectionService extends Service {
                         connection.getDisconnectCause(),
                         createIdList(connection.getConferenceables()),
                         connection.getExtras()));
+        if (isUnknown) {
+            triggerConferenceRecalculate();
+        }
     }
 
     private void abort(String callId) {
@@ -676,6 +697,11 @@ public abstract class ConnectionService extends Service {
     private void reject(String callId) {
         Log.d(this, "reject %s", callId);
         findConnectionForAction(callId, "reject").onReject();
+    }
+
+    private void reject(String callId, String rejectWithMessage) {
+        Log.d(this, "reject %s with message", callId);
+        findConnectionForAction(callId, "reject").onReject(rejectWithMessage);
     }
 
     private void disconnect(String callId) {
@@ -1013,6 +1039,16 @@ public abstract class ConnectionService extends Service {
             PhoneAccountHandle connectionManagerPhoneAccount,
             ConnectionRequest request) {
         return null;
+    }
+
+    /**
+     * Trigger recalculate functinality for conference calls. This is used when a Telephony
+     * Connection is part of a conference controller but is not yet added to Connection
+     * Service and hence cannot be added to the conference call.
+     *
+     * @hide
+     */
+    public void triggerConferenceRecalculate() {
     }
 
     /**

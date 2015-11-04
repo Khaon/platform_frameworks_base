@@ -953,6 +953,9 @@ public class Notification implements Parcelable
         private Action(Icon icon, CharSequence title, PendingIntent intent, Bundle extras,
                 RemoteInput[] remoteInputs) {
             this.mIcon = icon;
+            if (icon != null && icon.getType() == Icon.TYPE_RESOURCE) {
+                this.icon = icon.getResId();
+            }
             this.title = title;
             this.actionIntent = intent;
             this.mExtras = extras != null ? extras : new Bundle();
@@ -4607,7 +4610,7 @@ public class Notification implements Parcelable
          * Size value for use with {@link #setCustomSizePreset} to show this notification with
          * default sizing.
          * <p>For custom display notifications created using {@link #setDisplayIntent},
-         * the default is {@link #SIZE_LARGE}. All other notifications size automatically based
+         * the default is {@link #SIZE_MEDIUM}. All other notifications size automatically based
          * on their content.
          */
         public static final int SIZE_DEFAULT = 0;

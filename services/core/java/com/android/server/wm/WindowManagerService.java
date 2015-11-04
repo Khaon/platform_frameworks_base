@@ -997,7 +997,6 @@ public class WindowManagerService extends IWindowManager.Stub
             SurfaceControl.closeTransaction();
         }
 
-        updateCircularDisplayMaskIfNeeded();
         showEmulatorDisplayOverlayIfNeeded();
     }
 
@@ -2794,6 +2793,10 @@ public class WindowManagerService extends IWindowManager.Stub
     }
 
     void removeWindowInnerLocked(WindowState win) {
+        removeWindowInnerLocked(win, true);
+    }
+
+    void removeWindowInnerLocked(WindowState win, boolean performLayout) {
         if (win.mRemoved) {
             // Nothing to do.
             return;
@@ -2891,7 +2894,9 @@ public class WindowManagerService extends IWindowManager.Stub
                 if (displayContent != null) {
                     displayContent.layoutNeeded = true;
                 }
-                performLayoutAndPlaceSurfacesLocked();
+                if (performLayout) {
+                    performLayoutAndPlaceSurfacesLocked();
+                }
                 if (win.mAppToken != null) {
                     win.mAppToken.updateReportedVisibilityLocked();
                 }
@@ -4436,13 +4441,8 @@ public class WindowManagerService extends IWindowManager.Stub
                         + " ShowWallpaper="
                         + ent.array.getBoolean(
                                 com.android.internal.R.styleable.Window_windowShowWallpaper, false));
-                final boolean windowIsTranslucentDefined = ent.array.hasValue(
-                        com.android.internal.R.styleable.Window_windowIsTranslucent);
-                final boolean windowIsTranslucent = ent.array.getBoolean(
-                        com.android.internal.R.styleable.Window_windowIsTranslucent, false);
-                final boolean windowSwipeToDismiss = ent.array.getBoolean(
-                        com.android.internal.R.styleable.Window_windowSwipeToDismiss, false);
-                if (windowIsTranslucent || (!windowIsTranslucentDefined && windowSwipeToDismiss)) {
+                if (ent.array.getBoolean(
+                        com.android.internal.R.styleable.Window_windowIsTranslucent, false)) {
                     return;
                 }
                 if (ent.array.getBoolean(
@@ -5194,7 +5194,9 @@ public class WindowManagerService extends IWindowManager.Stub
     }
 
     public void removeStack(int stackId) {
-        mStackIdToStack.remove(stackId);
+        synchronized (mWindowMap) {
+            mStackIdToStack.remove(stackId);
+        }
     }
 
     public void removeTask(int taskId) {
@@ -5268,10 +5270,12 @@ public class WindowManagerService extends IWindowManager.Stub
     }
 
     public void getStackBounds(int stackId, Rect bounds) {
-        final TaskStack stack = mStackIdToStack.get(stackId);
-        if (stack != null) {
-            stack.getBounds(bounds);
-            return;
+        synchronized (mWindowMap) {
+            final TaskStack stack = mStackIdToStack.get(stackId);
+            if (stack != null) {
+                stack.getBounds(bounds);
+                return;
+            }
         }
         bounds.setEmpty();
     }
@@ -5939,7 +5943,7 @@ public class WindowManagerService extends IWindowManager.Stub
         }
     }
 
-    public void updateCircularDisplayMaskIfNeeded() {
+    private void updateCircularDisplayMaskIfNeeded() {
         // we're fullscreen and not hosted in an ActivityView
         if (mContext.getResources().getConfiguration().isScreenRound()
                 && mContext.getResources().getBoolean(
@@ -7660,6 +7664,8 @@ public class WindowManagerService extends IWindowManager.Stub
             mActivityManager.updateConfiguration(null);
         } catch (RemoteException e) {
         }
+
+        updateCircularDisplayMaskIfNeeded();
     }
 
     private void displayReady(int displayId) {
@@ -8705,7 +8711,8 @@ public class WindowManagerService extends IWindowManager.Stub
             displayInfo.overscanBottom = bottom;
         }
 
-        mDisplaySettings.setOverscanLocked(displayInfo.uniqueId, left, top, right, bottom);
+        mDisplaySettings.setOverscanLocked(displayInfo.uniqueId, displayInfo.name, left, top,
+                right, bottom);
         mDisplaySettings.writeSettingsLocked();
 
         reconfigureDisplayLocked(displayContent);
@@ -10414,8 +10421,8 @@ public class WindowManagerService extends IWindowManager.Stub
                     ": removed=" + win.mRemoved + " visible=" + win.isVisibleLw() +
                     " mHasSurface=" + win.mHasSurface +
                     " drawState=" + win.mWinAnimator.mDrawState);
-            if (win.mRemoved || !win.mHasSurface) {
-                // Window has been removed; no draw will now happen, so stop waiting.
+            if (win.mRemoved || !win.mHasSurface || !win.mPolicyVisibility) {
+                // Window has been removed or hidden; no draw will now happen, so stop waiting.
                 if (DEBUG_SCREEN_ON) Slog.w(TAG, "Aborted waiting for drawn: " + win);
                 mWaitingForDrawn.remove(win);
             } else if (win.hasDrawnLw()) {
@@ -11958,12 +11965,18 @@ public class WindowManagerService extends IWindowManager.Stub
                 final WindowList windows = getDefaultWindowListLocked();
                 for (int winNdx = windows.size() - 1; winNdx >= 0; --winNdx) {
                     final WindowState win = windows.get(winNdx);
+                    final boolean isForceHiding = mPolicy.isForceHiding(win.mAttrs);
                     if (win.isVisibleLw()
-                            && (win.mAppToken != null || mPolicy.isForceHiding(win.mAttrs))) {
+                            && (win.mAppToken != null || isForceHiding)) {
                         win.mWinAnimator.mDrawState = WindowStateAnimator.DRAW_PENDING;
                         // Force add to mResizingWindows.
                         win.mLastContentInsets.set(-1, -1, -1, -1);
                         mWaitingForDrawn.add(win);
+
+                        // No need to wait for the windows below Keyguard.
+                        if (isForceHiding) {
+                            break;
+                        }
                     }
                 }
                 requestTraversalLocked();

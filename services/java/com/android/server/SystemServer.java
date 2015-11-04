@@ -875,6 +875,11 @@ public final class SystemServer {
 
             if (!disableNonCoreServices) {
                 mSystemServiceManager.startService(DockObserver.class);
+
+                if (context.getPackageManager().hasSystemFeature
+                        (PackageManager.FEATURE_WATCH)) {
+                    mSystemServiceManager.startService(ThermalObserver.class);
+                }
             }
 
             traceBeginAndSlog("StartWiredAccessoryManager");
@@ -928,6 +933,11 @@ public final class SystemServer {
 
                 if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_VOICE_RECOGNIZERS)) {
                     mSystemServiceManager.startService(VOICE_RECOGNITION_MANAGER_SERVICE_CLASS);
+                }
+
+                if (GestureLauncherService.isGestureLauncherEnabled(context.getResources())) {
+                    Slog.i(TAG, "Gesture Launcher Service");
+                    mSystemServiceManager.startService(GestureLauncherService.class);
                 }
             }
 
@@ -1109,6 +1119,12 @@ public final class SystemServer {
         WindowManager w = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
         w.getDefaultDisplay().getMetrics(metrics);
         context.getResources().updateConfiguration(config, metrics);
+
+        // The system context's theme may be configuration-dependent.
+        final Theme systemTheme = context.getTheme();
+        if (systemTheme.getChangingConfigurations() != 0) {
+            systemTheme.rebase();
+        }
 
         Trace.traceBegin(Trace.TRACE_TAG_SYSTEM_SERVER, "MakePowerManagerServiceReady");
         try {

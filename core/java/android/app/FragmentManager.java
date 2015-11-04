@@ -869,6 +869,17 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
         }
     }
 
+    void setRetainLoader(boolean retain) {
+        if (mActive != null) {
+            for (int i=0; i<mActive.size(); i++) {
+                Fragment f = mActive.get(i);
+                if (f != null) {
+                    f.mRetainLoader = retain;
+                }
+            }
+        }
+    }
+
     void moveToState(Fragment f, int newState, int transit, int transitionStyle,
             boolean keepActive) {
         if (DEBUG && false) Log.v(TAG, "moveToState: " + f
@@ -2196,6 +2207,7 @@ final class FragmentManagerImpl extends FragmentManager implements LayoutInflate
             fragment.mTag = tag;
             fragment.mInLayout = true;
             fragment.mFragmentManager = this;
+            fragment.mHost = mHost;
             fragment.onInflate(mHost.getContext(), attrs, fragment.mSavedFragmentState);
             addFragment(fragment, true);
         } else if (fragment.mInLayout) {

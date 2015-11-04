@@ -206,8 +206,14 @@ public final class Call {
          */
         public static final int CAPABILITY_CAN_PAUSE_VIDEO = 0x00100000;
 
+        /**
+         * Call sends responses through connection.
+         * @hide
+         */
+        public static final int CAPABILITY_CAN_SEND_RESPONSE_VIA_CONNECTION = 0x00400000;
+
         //******************************************************************************************
-        // Next CAPABILITY value: 0x00004000
+        // Next CAPABILITY value: 0x00800000
         //******************************************************************************************
 
         /**
@@ -970,13 +976,20 @@ public final class Call {
         unregisterCallback(listener);
     }
 
-
     /** {@hide} */
     Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter) {
         mPhone = phone;
         mTelecomCallId = telecomCallId;
         mInCallAdapter = inCallAdapter;
         mState = STATE_NEW;
+    }
+
+    /** {@hide} */
+    Call(Phone phone, String telecomCallId, InCallAdapter inCallAdapter, int state) {
+        mPhone = phone;
+        mTelecomCallId = telecomCallId;
+        mInCallAdapter = inCallAdapter;
+        mState = state;
     }
 
     /** {@hide} */

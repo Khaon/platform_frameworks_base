@@ -83,6 +83,14 @@ static void SigChldHandler(int /*signal_number*/) {
   pid_t pid;
   int status;
 
+  // It's necessary to save and restore the errno during this function.
+  // Since errno is stored per thread, changing it here modifies the errno
+  // on the thread on which this signal handler executes. If a signal occurs
+  // between a call and an errno check, it's possible to get the errno set
+  // here.
+  // See b/23572286 for extra information.
+  int saved_errno = errno;
+
   while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
      // Log process-death status that we care about.  In general it is
      // not safe to call LOG(...) from a signal handler because of
@@ -118,6 +126,8 @@ static void SigChldHandler(int /*signal_number*/) {
   if (pid < 0 && errno != ECHILD) {
     ALOGW("Zygote SIGCHLD error in waitpid: %s", strerror(errno));
   }
+
+  errno = saved_errno;
 }
 
 // Configures the SIGCHLD handler for the zygote process. This is configured
@@ -408,6 +418,27 @@ void SetThreadName(const char* thread_name) {
   }
 }
 
+#ifdef ENABLE_SCHED_BOOST
+static void SetForkLoad(bool boost) {
+  // set scheduler knob to boost forked processes
+  pid_t currentPid = getpid();
+  // fits at most "/proc/XXXXXXX/sched_init_task_load\0"
+  char schedPath[35];
+  snprintf(schedPath, sizeof(schedPath), "/proc/%u/sched_init_task_load", currentPid);
+  int schedBoostFile = open(schedPath, O_WRONLY);
+  if (schedBoostFile < 0) {
+    ALOGW("Unable to set zygote scheduler boost");
+    return;
+  }
+  if (boost) {
+    write(schedBoostFile, "100\0", 4);
+  } else {
+    write(schedBoostFile, "0\0", 2);
+  }
+  close(schedBoostFile);
+}
+#endif
+
 // Utility routine to fork zygote and specialize the child process.
 static pid_t ForkAndSpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArray javaGids,
                                      jint debug_flags, jobjectArray javaRlimits,
@@ -417,6 +448,10 @@ static pid_t ForkAndSpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArra
                                      bool is_system_server, jintArray fdsToClose,
                                      jstring instructionSet, jstring dataDir) {
   SetSigChldHandler();
+
+#ifdef ENABLE_SCHED_BOOST
+  SetForkLoad(true);
+#endif
 
   pid_t pid = fork();
 
@@ -558,6 +593,12 @@ static pid_t ForkAndSpecializeCommon(JNIEnv* env, uid_t uid, gid_t gid, jintArra
     }
   } else if (pid > 0) {
     // the parent process
+
+#ifdef ENABLE_SCHED_BOOST
+    // unset scheduler knob
+    SetForkLoad(false);
+#endif
+
   }
   return pid;
 }
@@ -570,10 +611,34 @@ static jint com_android_internal_os_Zygote_nativeForkAndSpecialize(
         jint debug_flags, jobjectArray rlimits,
         jint mount_external, jstring se_info, jstring se_name,
         jintArray fdsToClose, jstring instructionSet, jstring appDataDir) {
-    // Grant CAP_WAKE_ALARM to the Bluetooth process.
     jlong capabilities = 0;
     if (uid == AID_BLUETOOTH) {
+        // Grant CAP_WAKE_ALARM and CAP_BLOCK_SUSPEND to the Bluetooth process.
         capabilities |= (1LL << CAP_WAKE_ALARM);
+        capabilities |= (1LL << CAP_BLOCK_SUSPEND);
+
+        // Add the Bluetooth process to the system group.
+        jsize length = env->GetArrayLength(reinterpret_cast<jarray>(gids));
+        jintArray gids_with_system = env->NewIntArray(length + 1);
+        if (!gids_with_system) {
+            ALOGE("could not allocate java array for gids");
+            RuntimeAbort(env);
+        }
+
+        jint *gids_elements = env->GetIntArrayElements(gids, NULL);
+        jint *gids_with_system_elements = env->GetIntArrayElements(gids_with_system, NULL);
+
+        if (!gids_elements || !gids_with_system_elements) {
+            ALOGE("could not allocate arrays for gids");
+            RuntimeAbort(env);
+        }
+
+        gids_with_system_elements[0] = AID_SYSTEM;
+        memcpy(&gids_with_system_elements[1], &gids_elements[0], length * sizeof(jint));
+
+        env->ReleaseIntArrayElements(gids, gids_elements, JNI_ABORT);
+        env->ReleaseIntArrayElements(gids_with_system, gids_with_system_elements, 0);
+        gids = gids_with_system;
     }
 
     return ForkAndSpecializeCommon(env, uid, gid, gids, debug_flags,

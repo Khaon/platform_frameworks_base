@@ -2287,16 +2287,16 @@ public class PackageManagerService extends IPackageManager.Stub {
             }
             updatePermissionsLPw(null, null, updateFlags);
             ver.sdkVersion = mSdkVersion;
-            // clear only after permissions have been updated
-            mExistingSystemPackages.clear();
-            mPromoteSystemApps = false;
 
-            // If this is the first boot, and it is a normal boot, then
-            // we need to initialize the default preferred apps.
-            if (!mRestoredSettings && !onlyCore) {
-                mSettings.applyDefaultPreferredAppsLPw(this, UserHandle.USER_OWNER);
-                applyFactoryDefaultBrowserLPw(UserHandle.USER_OWNER);
-                primeDomainVerificationsLPw(UserHandle.USER_OWNER);
+            // If this is the first boot or an update from pre-M, and it is a normal
+            // boot, then we need to initialize the default preferred apps across
+            // all defined users.
+            if (!onlyCore && (mPromoteSystemApps || !mRestoredSettings)) {
+                for (UserInfo user : sUserManager.getUsers(true)) {
+                    mSettings.applyDefaultPreferredAppsLPw(this, user.id);
+                    applyFactoryDefaultBrowserLPw(user.id);
+                    primeDomainVerificationsLPw(user.id);
+                }
             }
 
             // If this is first boot after an OTA, and a normal boot, then
@@ -2313,6 +2313,10 @@ public class PackageManagerService extends IPackageManager.Stub {
             }
 
             checkDefaultBrowser();
+
+            // clear only after permissions and other defaults have been updated
+            mExistingSystemPackages.clear();
+            mPromoteSystemApps = false;
 
             // All the changes are done during package scanning.
             ver.databaseVersion = Settings.CURRENT_DATABASE_VERSION;
@@ -4234,16 +4238,18 @@ public class PackageManagerService extends IPackageManager.Stub {
                 if (ri != null) {
                     return ri;
                 }
+                ri = new ResolveInfo(mResolveInfo);
+                ri.activityInfo = new ActivityInfo(ri.activityInfo);
+                ri.activityInfo.applicationInfo = new ApplicationInfo(
+                        ri.activityInfo.applicationInfo);
                 if (userId != 0) {
-                    ri = new ResolveInfo(mResolveInfo);
-                    ri.activityInfo = new ActivityInfo(ri.activityInfo);
-                    ri.activityInfo.applicationInfo = new ApplicationInfo(
-                            ri.activityInfo.applicationInfo);
                     ri.activityInfo.applicationInfo.uid = UserHandle.getUid(userId,
                             UserHandle.getAppId(ri.activityInfo.applicationInfo.uid));
-                    return ri;
                 }
-                return mResolveInfo;
+                // Make sure that the resolver is displayable in car mode
+                if (ri.activityInfo.metaData == null) ri.activityInfo.metaData = new Bundle();
+                ri.activityInfo.metaData.putBoolean(Intent.METADATA_DOCK_HOME, true);
+                return ri;
             }
         }
         return null;
@@ -5931,12 +5937,6 @@ public class PackageManagerService extends IPackageManager.Stub {
          */
         if (shouldHideSystemApp) {
             synchronized (mPackages) {
-                /*
-                 * We have to grant systems permissions before we hide, because
-                 * grantPermissions will assume the package update is trying to
-                 * expand its permissions.
-                 */
-                grantPermissionsLPw(pkg, true, pkg.packageName);
                 mSettings.disableSystemPackageLPw(pkg.packageName);
             }
         }
@@ -13577,9 +13577,14 @@ public class PackageManagerService extends IPackageManager.Stub {
                 libDirRoot = ps.legacyNativeLibraryPathString;
             }
             if (p != null && (isExternal(p) || p.isForwardLocked())) {
-                String secureContainerId = cidFromCodePath(p.applicationInfo.getBaseCodePath());
-                if (secureContainerId != null) {
-                    asecPath = PackageHelper.getSdFilesystem(secureContainerId);
+                final long token = Binder.clearCallingIdentity();
+                try {
+                    String secureContainerId = cidFromCodePath(p.applicationInfo.getBaseCodePath());
+                    if (secureContainerId != null) {
+                        asecPath = PackageHelper.getSdFilesystem(secureContainerId);
+                    }
+                } finally {
+                    Binder.restoreCallingIdentity(token);
                 }
             }
         }
@@ -13600,7 +13605,21 @@ public class PackageManagerService extends IPackageManager.Stub {
         // TODO(multiArch): Extend getSizeInfo to look at *all* instruction sets, not
         // just the primary.
         String[] dexCodeInstructionSets = getDexCodeInstructionSets(getAppDexInstructionSets(ps));
-        int res = mInstaller.getSizeInfo(p.volumeUuid, packageName, userHandle, p.baseCodePath,
+
+        String apkPath;
+        File packageDir = new File(p.codePath);
+
+        if (packageDir.isDirectory() && p.canHaveOatDir()) {
+            apkPath = packageDir.getAbsolutePath();
+            // If libDirRoot is inside a package dir, set it to null to avoid it being counted twice
+            if (libDirRoot != null && libDirRoot.startsWith(apkPath)) {
+                libDirRoot = null;
+            }
+        } else {
+            apkPath = p.baseCodePath;
+        }
+
+        int res = mInstaller.getSizeInfo(p.volumeUuid, packageName, userHandle, apkPath,
                 libDirRoot, publicSrcDir, asecPath, dexCodeInstructionSets, pStats);
         if (res < 0) {
             return false;
@@ -15636,14 +15655,28 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
     }
 
-    private void loadPrivatePackages(VolumeInfo vol) {
+    private void loadPrivatePackages(final VolumeInfo vol) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                loadPrivatePackagesInner(vol);
+            }
+        });
+    }
+
+    private void loadPrivatePackagesInner(VolumeInfo vol) {
         final ArrayList<ApplicationInfo> loaded = new ArrayList<>();
         final int parseFlags = mDefParseFlags | PackageParser.PARSE_EXTERNAL_STORAGE;
-        synchronized (mInstallLock) {
+
+        final VersionInfo ver;
+        final List<PackageSetting> packages;
         synchronized (mPackages) {
-            final VersionInfo ver = mSettings.findOrCreateVersion(vol.fsUuid);
-            final List<PackageSetting> packages = mSettings.getVolumePackagesLPr(vol.fsUuid);
-            for (PackageSetting ps : packages) {
+            ver = mSettings.findOrCreateVersion(vol.fsUuid);
+            packages = mSettings.getVolumePackagesLPr(vol.fsUuid);
+        }
+
+        for (PackageSetting ps : packages) {
+            synchronized (mInstallLock) {
                 final PackageParser.Package pkg;
                 try {
                     pkg = scanPackageLI(ps.codePath, parseFlags, SCAN_INITIAL, 0L, null);
@@ -15656,7 +15689,9 @@ public class PackageManagerService extends IPackageManager.Stub {
                     deleteCodeCacheDirsLI(ps.volumeUuid, ps.name);
                 }
             }
+        }
 
+        synchronized (mPackages) {
             int updateFlags = UPDATE_PERMISSIONS_ALL;
             if (ver.sdkVersion != mSdkVersion) {
                 logCriticalInfo(Log.INFO, "Platform changed from " + ver.sdkVersion + " to "
@@ -15670,13 +15705,21 @@ public class PackageManagerService extends IPackageManager.Stub {
 
             mSettings.writeLPr();
         }
-        }
 
         if (DEBUG_INSTALL) Slog.d(TAG, "Loaded packages " + loaded);
         sendResourcesChangedBroadcast(true, false, loaded, null);
     }
 
-    private void unloadPrivatePackages(VolumeInfo vol) {
+    private void unloadPrivatePackages(final VolumeInfo vol) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                unloadPrivatePackagesInner(vol);
+            }
+        });
+    }
+
+    private void unloadPrivatePackagesInner(VolumeInfo vol) {
         final ArrayList<ApplicationInfo> unloaded = new ArrayList<>();
         synchronized (mInstallLock) {
         synchronized (mPackages) {
@@ -15751,7 +15794,7 @@ public class PackageManagerService extends IPackageManager.Stub {
             if (userDir.exists()) continue;
 
             try {
-                UserManagerService.prepareUserDirectory(userDir);
+                UserManagerService.prepareUserDirectory(mContext, volumeUuid, user.id);
                 UserManagerService.enforceSerialNumber(userDir, user.serialNumber);
             } catch (IOException e) {
                 Log.wtf(TAG, "Failed to create user directory on " + volumeUuid, e);
