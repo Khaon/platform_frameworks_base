@@ -609,6 +609,15 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(gmscorePackage, STORAGE_PERMISSIONS, userId);
             }
 
+             // Google Connectivity Services
+             PackageParser.Package gcsPackage = getDefaultProviderAuthorityPackageLPr(
+                     "com.google.android.apps.gcs", userId);
+               if (gcsPackage != null) {
+                 grantRuntimePermissionsLPw(gcsPackage, CONTACTS_PERMISSIONS, userId);
+                 grantRuntimePermissionsLPw(gcsPackage, LOCATION_PERMISSIONS, userId);
+             }
+
+
             // Google Contacts Sync
             PackageParser.Package googlecontactssyncPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.syncadapters.contacts", userId);
@@ -616,7 +625,14 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(googlecontactssyncPackage, CONTACTS_PERMISSIONS, userId);
             }
 
-			// Google Setup Wizard
+            // Google Backup Transport
+            PackageParser.Package googlebackuptransportPackage = getDefaultProviderAuthorityPackageLPr(
+                    "com.google.android.backuptransport", userId);
+            if (googlebackuptransportPackage != null) {
+                grantRuntimePermissionsLPw(googlebackuptransportPackage, CONTACTS_PERMISSIONS, userId);
+            }
+
+	    // Google Setup Wizard
             PackageParser.Package setupwizardPackage = getDefaultProviderAuthorityPackageLPr(
                     "com.google.android.setupwizard", userId);
             if (setupwizardPackage != null) {
