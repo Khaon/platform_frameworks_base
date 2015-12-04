@@ -56,6 +56,7 @@ public abstract class WindowOrientationListener {
     private int mRate;
     private String mSensorType;
     private Sensor mSensor;
+    private boolean museSystemClockforSensors;
     private OrientationJudge mOrientationJudge;
     private int mCurrentRotation = -1;
 
@@ -87,6 +88,9 @@ public abstract class WindowOrientationListener {
         mHandler = handler;
         mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
         mRate = rate;
+
+        museSystemClockforSensors = context.getResources().getBoolean(
+                 com.android.internal.R.bool.config_useSystemClockforSensors);
 
         mSensorType = context.getResources().getString(
                 com.android.internal.R.string.config_orientationSensorType);
@@ -598,7 +602,12 @@ public abstract class WindowOrientationListener {
                 // Reset the orientation listener state if the samples are too far apart in time
                 // or when we see values of (0, 0, 0) which indicates that we polled the
                 // accelerometer too soon after turning it on and we don't have any data yet.
-                final long now = event.timestamp;
+                final long now;
+                if (museSystemClockforSensors) {
+                    now = SystemClock.elapsedRealtimeNanos();
+                } else {
+                    now = event.timestamp;
+                }
                 final long then = mLastFilteredTimestampNanos;
                 final float timeDeltaMS = (now - then) * 0.000001f;
                 final boolean skipSample;
