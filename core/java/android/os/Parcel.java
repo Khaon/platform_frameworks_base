@@ -204,6 +204,7 @@ public final class Parcel {
     private static final Parcel[] sOwnedPool = new Parcel[POOL_SIZE];
     private static final Parcel[] sHolderPool = new Parcel[POOL_SIZE];
 
+    // Keep in sync with frameworks/native/libs/binder/PersistableBundle.cpp.
     private static final int VAL_NULL = -1;
     private static final int VAL_STRING = 0;
     private static final int VAL_INTEGER = 1;
@@ -704,6 +705,8 @@ public final class Parcel {
             writeInt(-1);
             return;
         }
+        // Keep the format of this Parcel in sync with writeToParcelInner() in
+        // frameworks/native/libs/binder/PersistableBundle.cpp.
         final int N = val.size();
         writeInt(N);
         if (DEBUG_ARRAY_MAP) {
@@ -1370,7 +1373,13 @@ public final class Parcel {
             // Must be before Parcelable
             writeInt(VAL_BUNDLE);
             writeBundle((Bundle) v);
+        } else if (v instanceof PersistableBundle) {
+            writeInt(VAL_PERSISTABLEBUNDLE);
+            writePersistableBundle((PersistableBundle) v);
         } else if (v instanceof Parcelable) {
+            // IMPOTANT: cases for classes that implement Parcelable must
+            // come before the Parcelable case, so that their specific VAL_*
+            // types will be written.
             writeInt(VAL_PARCELABLE);
             writeParcelable((Parcelable) v, 0);
         } else if (v instanceof Short) {
@@ -1426,9 +1435,6 @@ public final class Parcel {
         } else if (v instanceof Byte) {
             writeInt(VAL_BYTE);
             writeInt((Byte) v);
-        } else if (v instanceof PersistableBundle) {
-            writeInt(VAL_PERSISTABLEBUNDLE);
-            writePersistableBundle((PersistableBundle) v);
         } else if (v instanceof Size) {
             writeInt(VAL_SIZE);
             writeSize((Size) v);
