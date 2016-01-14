@@ -974,6 +974,12 @@ public abstract class WindowOrientationListener {
         private int mDesiredRotation = -1;
         private boolean mRotationEvaluationScheduled;
 
+
+        // The minimum amount of time that must have elapsed since the screen was last touched
+        // before the proposed rotation can change.
+        private static final long PROPOSAL_MIN_TIME_SINCE_TOUCH_END_NANOS =
+                250 * NANOS_PER_MS;
+
         @Override
         public int getProposedRotationLocked() {
             return mProposedRotation;
