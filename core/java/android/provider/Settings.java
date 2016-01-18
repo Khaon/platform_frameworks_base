@@ -5663,6 +5663,18 @@ public final class Settings {
                 "usb_audio_automatic_routing_disabled";
 
         /**
+         * Whether to include options in power menu for rebooting into recovery or bootloader
+         * @hide
+         */
+        public static final String ADVANCED_REBOOT = "advanced_reboot";
+
+        /**
+         * Whether developer settings dare enabled.
+         * @hide
+         */
+        public static final String DEVELOPER_OPTIONS_ENABLED = "developer_options_enabled";
+
+        /**
          * The timeout in milliseconds before the device fully goes to sleep after
          * a period of inactivity.  This value sets an upper bound on how long the device
          * will stay awake or dreaming without user activity.  It should generally
