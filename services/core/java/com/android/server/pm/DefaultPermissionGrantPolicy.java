@@ -602,7 +602,7 @@ final class DefaultPermissionGrantPolicy {
                 grantRuntimePermissionsLPw(gmscorePackage, CALENDAR_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(gmscorePackage, CAMERA_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(gmscorePackage, CONTACTS_PERMISSIONS, userId);
-                grantRuntimePermissionsLPw(gmscorePackage, LOCATION_PERMISSIONS, userId);
+                grantRuntimePermissionsLPw(gmscorePackage, LOCATION_PERMISSIONS, false, true, userId);
                 grantRuntimePermissionsLPw(gmscorePackage, MICROPHONE_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(gmscorePackage, PHONE_PERMISSIONS, userId);
                 grantRuntimePermissionsLPw(gmscorePackage, SMS_PERMISSIONS, userId);
