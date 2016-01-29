@@ -48429,6 +48429,9 @@ package java.lang {
     field public static final java.lang.Class<java.lang.Float> TYPE;
   }
 
+  public abstract class FunctionalInterface implements java.lang.annotation.Annotation {
+  }
+
   public class IllegalAccessError extends java.lang.IncompatibleClassChangeError {
     ctor public IllegalAccessError();
     ctor public IllegalAccessError(java.lang.String);
@@ -49360,6 +49363,9 @@ package java.lang.annotation {
   public abstract class Inherited implements java.lang.annotation.Annotation {
   }
 
+  public abstract class Repeatable implements java.lang.annotation.Annotation {
+  }
+
   public abstract class Retention implements java.lang.annotation.Annotation {
   }
 
@@ -49558,6 +49564,7 @@ package java.lang.reflect {
     method public java.lang.Object invoke(java.lang.Object, java.lang.Object...) throws java.lang.IllegalAccessException, java.lang.IllegalArgumentException, java.lang.reflect.InvocationTargetException;
     method public boolean isAnnotationPresent(java.lang.Class<? extends java.lang.annotation.Annotation>);
     method public boolean isBridge();
+    method public boolean isDefault();
     method public boolean isSynthetic();
     method public boolean isVarArgs();
     method public java.lang.String toGenericString();
