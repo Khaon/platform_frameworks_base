@@ -20,6 +20,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     liblog \
     libbinder \
+    libnativeloader \
     libandroid_runtime \
     $(app_process_common_shared_libs) \
 
@@ -52,6 +53,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     liblog \
     libbinder \
+    libnativeloader \
     libandroid_runtime \
     $(app_process_common_shared_libs) \
 

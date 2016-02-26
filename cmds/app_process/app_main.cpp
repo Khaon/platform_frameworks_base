@@ -21,6 +21,7 @@
 #include <cutils/properties.h>
 #include <cutils/trace.h>
 #include <android_runtime/AndroidRuntime.h>
+#include <nativeloader/native_loader.h>
 #include <private/android_filesystem_config.h>  // for AID_SYSTEM
 
 namespace android {
@@ -304,6 +305,7 @@ int main(int argc, char* const argv[])
     }
 
     if (zygote) {
+        PreloadPublicNativeLibraries();
         runtime.start("com.android.internal.os.ZygoteInit", args, zygote);
     } else if (className) {
         runtime.start("com.android.internal.os.RuntimeInit", args, zygote);
