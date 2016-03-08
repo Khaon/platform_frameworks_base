@@ -48,9 +48,9 @@
     <string name="bluetooth_profile_opp" msgid="9168139293654233697">"ফাইল স্থানান্তর"</string>
     <string name="bluetooth_profile_hid" msgid="3680729023366986480">"ইনপুট ডিভাইস"</string>
     <string name="bluetooth_profile_pan" msgid="3391606497945147673">"ইন্টারনেট অ্যাক্সেস"</string>
-    <string name="bluetooth_profile_pbap" msgid="5372051906968576809">"পরিচিতি ভাগ করা"</string>
-    <string name="bluetooth_profile_pbap_summary" msgid="6605229608108852198">"পরিচিতি ভাগ করার কাজে ব্যবহার করুন"</string>
-    <string name="bluetooth_profile_pan_nap" msgid="8429049285027482959">"ইন্টারনেট সংযোগ ভাগ করা হচ্ছে"</string>
+    <string name="bluetooth_profile_pbap" msgid="5372051906968576809">"পরিচিতি শেয়ার করা"</string>
+    <string name="bluetooth_profile_pbap_summary" msgid="6605229608108852198">"পরিচিতি শেয়ার করার কাজে ব্যবহার করুন"</string>
+    <string name="bluetooth_profile_pan_nap" msgid="8429049285027482959">"ইন্টারনেট সংযোগ শেয়ার করা হচ্ছে"</string>
     <string name="bluetooth_profile_map" msgid="5465271250454324383">"বার্তা অ্যাক্সেস"</string>
     <string name="bluetooth_profile_sap" msgid="5764222021851283125">"SIM -এর অ্যাক্সেস"</string>
     <string name="bluetooth_a2dp_profile_summary_connected" msgid="963376081347721598">"মিডিয়া অডিওতে সংযুক্ত রয়েছে"</string>

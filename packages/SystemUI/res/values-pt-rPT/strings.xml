@@ -25,10 +25,10 @@
     <string name="status_bar_recent_inspect_item_title" msgid="7793624864528818569">"Informações da aplicação"</string>
     <string name="status_bar_no_recent_apps" msgid="7374907845131203189">"Os ecrãs recentes aparecem aqui"</string>
     <string name="status_bar_accessibility_dismiss_recents" msgid="4576076075226540105">"Ignorar aplicações recentes"</string>
-  <plurals name="status_bar_accessibility_recent_apps">
-    <item quantity="one" msgid="3969335317929254918">"1 ecrã na Visão geral"</item>
-    <item quantity="other" msgid="5523506463832158203">"%d ecrãs na Visão geral"</item>
-  </plurals>
+    <plurals name="status_bar_accessibility_recent_apps" formatted="false" msgid="9138535907802238759">
+      <item quantity="other">%d ecrãs na Vista geral</item>
+      <item quantity="one">1 ecrã na Vista geral</item>
+    </plurals>
     <string name="status_bar_no_notifications_title" msgid="4755261167193833213">"Sem notificações"</string>
     <string name="status_bar_ongoing_events_title" msgid="1682504513316879202">"Em curso"</string>
     <string name="status_bar_latest_events_title" msgid="6594767438577593172">"Notificações"</string>
@@ -414,7 +414,7 @@
     <string name="status_bar_airplane" msgid="7057575501472249002">"Modo de avião"</string>
     <string name="add_tile" msgid="2995389510240786221">"Adicionar mosaico"</string>
     <string name="broadcast_tile" msgid="3894036511763289383">"Mosaico de transmissão"</string>
-    <string name="zen_alarm_warning_indef" msgid="3482966345578319605">"Só vai ouvir o próximo alarme às <xliff:g id="WHEN">%1$s</xliff:g> se desativar esta funcionalidade antes dessa hora"</string>
+    <string name="zen_alarm_warning_indef" msgid="3482966345578319605">"Só vai ouvir o próximo alarme (<xliff:g id="WHEN">%1$s</xliff:g>) se desativar esta funcionalidade antes dessa hora"</string>
     <string name="zen_alarm_warning" msgid="444533119582244293">"Não vai ouvir o próximo alarme às <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="3980063409350522735">"às <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="4242179982586714810">"em <xliff:g id="WHEN">%1$s</xliff:g>"</string>

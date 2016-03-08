@@ -25,10 +25,10 @@
     <string name="status_bar_recent_inspect_item_title" msgid="7793624864528818569">"ຂໍ້ມູນແອັບຯ"</string>
     <string name="status_bar_no_recent_apps" msgid="7374907845131203189">"Your recent screens appear here"</string>
     <string name="status_bar_accessibility_dismiss_recents" msgid="4576076075226540105">"ປິດແອັບຯຫຼ້າສຸດທີ່ໃຊ້"</string>
-  <plurals name="status_bar_accessibility_recent_apps">
-    <item quantity="one" msgid="3969335317929254918">"1 ​ໜ້າ​ຈໍ​ຢູ່​ໃນ​ພາບ​ຮວມ"</item>
-    <item quantity="other" msgid="5523506463832158203">"%d ​ໜ້າ​ຈໍ​ຢູ່​ໃນ​ພາບ​ຮວມ"</item>
-  </plurals>
+    <plurals name="status_bar_accessibility_recent_apps" formatted="false" msgid="9138535907802238759">
+      <item quantity="other">%d ໜ້າ​ຈໍ​ຢູ່​ໃນ​ພາບ​ລວມ</item>
+      <item quantity="one">1 ​ໜ້າ​ຈໍ​ຢູ່​ໃນ​ພາບ​ລວມ</item>
+    </plurals>
     <string name="status_bar_no_notifications_title" msgid="4755261167193833213">"ບໍ່ມີການແຈ້ງເຕືອນ"</string>
     <string name="status_bar_ongoing_events_title" msgid="1682504513316879202">"ດຳເນີນຢູ່"</string>
     <string name="status_bar_latest_events_title" msgid="6594767438577593172">"ການແຈ້ງເຕືອນ"</string>
@@ -265,7 +265,7 @@
     <string name="quick_settings_wifi_no_network" msgid="2221993077220856376">"ບໍ່ມີເຄືອຂ່າຍ"</string>
     <string name="quick_settings_wifi_off_label" msgid="7558778100843885864">"Wi​-Fi ປິດ"</string>
     <string name="quick_settings_wifi_detail_empty_text" msgid="269990350383909226">"ບໍ່​ມີ​ເຄືອ​ຂ່າຍ Wi-Fi ຢູ່"</string>
-    <string name="quick_settings_cast_title" msgid="7709016546426454729">"ຄາສທ໌"</string>
+    <string name="quick_settings_cast_title" msgid="7709016546426454729">"ການສົ່ງສັນຍານ"</string>
     <string name="quick_settings_casting" msgid="6601710681033353316">"​ກຳ​ລັງ​ສົ່ງ​ສັນ​ຍານ"</string>
     <string name="quick_settings_cast_device_default_name" msgid="5367253104742382945">"​ອຸ​ປະ​ກອນບໍ່​ມີ​ຊື່"</string>
     <string name="quick_settings_cast_device_default_description" msgid="2484573682378634413">"​ພ້ອ​ມ​ສົ່ງ​ສັນ​ຍານ​ແລ້ວ"</string>

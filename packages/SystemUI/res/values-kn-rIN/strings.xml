@@ -25,10 +25,10 @@
     <string name="status_bar_recent_inspect_item_title" msgid="7793624864528818569">"ಅಪ್ಲಿಕೇಶನ್ ಮಾಹಿತಿ"</string>
     <string name="status_bar_no_recent_apps" msgid="7374907845131203189">"ನಿಮ್ಮ ಇತ್ತೀಚಿನ ಪರದೆಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ"</string>
     <string name="status_bar_accessibility_dismiss_recents" msgid="4576076075226540105">"ಇತ್ತೀಚಿನ ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ವಜಾಗೊಳಿಸು"</string>
-  <plurals name="status_bar_accessibility_recent_apps">
-    <item quantity="one" msgid="3969335317929254918">"ಸಮಗ್ರ ನೋಟದಲ್ಲಿರುವ 1 ಪರದೆ"</item>
-    <item quantity="other" msgid="5523506463832158203">"ಸಮಗ್ರ ನೋಟದಲ್ಲಿರುವ %d ಪರದೆಗಳು"</item>
-  </plurals>
+    <plurals name="status_bar_accessibility_recent_apps" formatted="false" msgid="9138535907802238759">
+      <item quantity="one">ಸಮಗ್ರ ನೋಟದಲ್ಲಿರುವ %d ಪರದೆಗಳು</item>
+      <item quantity="other">ಸಮಗ್ರ ನೋಟದಲ್ಲಿರುವ %d ಪರದೆಗಳು</item>
+    </plurals>
     <string name="status_bar_no_notifications_title" msgid="4755261167193833213">"ಯಾವುದೇ ಅಧಿಸೂಚನೆಗಳಿಲ್ಲ"</string>
     <string name="status_bar_ongoing_events_title" msgid="1682504513316879202">"ಚಾಲ್ತಿಯಲ್ಲಿರುವ"</string>
     <string name="status_bar_latest_events_title" msgid="6594767438577593172">"ಅಧಿಸೂಚನೆಗಳು"</string>

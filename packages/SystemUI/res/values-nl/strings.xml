@@ -25,10 +25,10 @@
     <string name="status_bar_recent_inspect_item_title" msgid="7793624864528818569">"App-info"</string>
     <string name="status_bar_no_recent_apps" msgid="7374907845131203189">"Je recente schermen worden hier weergegeven"</string>
     <string name="status_bar_accessibility_dismiss_recents" msgid="4576076075226540105">"Recente apps negeren"</string>
-  <plurals name="status_bar_accessibility_recent_apps">
-    <item quantity="one" msgid="3969335317929254918">"1 scherm in Overzicht"</item>
-    <item quantity="other" msgid="5523506463832158203">"%d schermen in Overzicht"</item>
-  </plurals>
+    <plurals name="status_bar_accessibility_recent_apps" formatted="false" msgid="9138535907802238759">
+      <item quantity="other">%d schermen in Overzicht</item>
+      <item quantity="one">1 scherm in Overzicht</item>
+    </plurals>
     <string name="status_bar_no_notifications_title" msgid="4755261167193833213">"Geen meldingen"</string>
     <string name="status_bar_ongoing_events_title" msgid="1682504513316879202">"Actief"</string>
     <string name="status_bar_latest_events_title" msgid="6594767438577593172">"Meldingen"</string>
@@ -283,7 +283,7 @@
     <string name="quick_settings_notifications_label" msgid="4818156442169154523">"Meldingen"</string>
     <string name="quick_settings_flashlight_label" msgid="2133093497691661546">"Zaklamp"</string>
     <string name="quick_settings_cellular_detail_title" msgid="8575062783675171695">"Mobiele gegevens"</string>
-    <string name="quick_settings_cellular_detail_data_usage" msgid="1964260360259312002">"Gegevensgebruik"</string>
+    <string name="quick_settings_cellular_detail_data_usage" msgid="1964260360259312002">"Datagebruik"</string>
     <string name="quick_settings_cellular_detail_remaining_data" msgid="722715415543541249">"Resterende gegevens"</string>
     <string name="quick_settings_cellular_detail_over_limit" msgid="967669665390990427">"Limiet overschreden"</string>
     <string name="quick_settings_cellular_detail_data_used" msgid="1476810587475761478">"<xliff:g id="DATA_USED">%s</xliff:g> gebruikt"</string>
@@ -396,7 +396,7 @@
     <string name="quick_settings_reset_confirmation_button" msgid="2660339101868367515">"Verbergen"</string>
     <string name="volumeui_prompt_message" msgid="918680947433389110">"<xliff:g id="APP_NAME">%1$s</xliff:g> wil het volumedialoogvenster zijn."</string>
     <string name="volumeui_prompt_allow" msgid="7954396902482228786">"Toestaan"</string>
-    <string name="volumeui_prompt_deny" msgid="5720663643411696731">"Afwijzen"</string>
+    <string name="volumeui_prompt_deny" msgid="5720663643411696731">"Weigeren"</string>
     <string name="volumeui_notification_title" msgid="4906770126345910955">"<xliff:g id="APP_NAME">%1$s</xliff:g> is het volumedialoogvenster"</string>
     <string name="volumeui_notification_text" msgid="1826889705095768656">"Tik hierop om het origineel te herstellen."</string>
     <string name="managed_profile_foreground_toast" msgid="5421487114739245972">"U gebruikt je werkprofiel"</string>

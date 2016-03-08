@@ -85,7 +85,7 @@
     <string name="accessibility_wifi_signal_full" msgid="7061045677694702">"Semnal Wi-Fi: complet."</string>
     <string name="process_kernel_label" msgid="3916858646836739323">"Sistem de operare Android"</string>
     <string name="data_usage_uninstalled_apps" msgid="614263770923231598">"Aplicații eliminate"</string>
-    <string name="data_usage_uninstalled_apps_users" msgid="7986294489899813194">"Aplicaţii și utilizatori eliminaţi"</string>
+    <string name="data_usage_uninstalled_apps_users" msgid="7986294489899813194">"Aplicații și utilizatori eliminați"</string>
     <string name="tether_settings_title_usb" msgid="6688416425801386511">"Tethering prin USB"</string>
     <string name="tether_settings_title_wifi" msgid="3277144155960302049">"Hotspot portabil"</string>
     <string name="tether_settings_title_bluetooth" msgid="355855408317564420">"Tethering prin Bluetooth"</string>
