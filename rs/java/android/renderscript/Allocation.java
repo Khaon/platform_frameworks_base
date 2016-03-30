@@ -142,7 +142,10 @@ public class Allocation extends BaseObj {
             }
             return Element.DataType.FLOAT_64;
         }
-        return null;
+
+        throw new RSIllegalArgumentException("Parameter of type " + cmp.getSimpleName() +
+            "[] is not compatible with data type " + mType.mElement.mType.name() +
+            " of allocation");
     }
 
 
@@ -293,8 +296,13 @@ public class Allocation extends BaseObj {
     }
 
     /**
-     * Enable/Disable AutoPadding for Vec3 elements.
-     * By default: Diabled.
+     * Enable/Disable AutoPadding for Vec3 Elements.
+     *
+     * <p> Vec3 Elements, such as {@link Element#U8_3} are treated as Vec4 Elements
+     * with the fourth vector element used as padding. Enabling the AutoPadding feature
+     * will automatically add/remove the padding when you copy to/from an Allocation
+     * with a Vec3 Element.
+     * <p> By default: Disabled.
      *
      * @param useAutoPadding True: enable AutoPadding; False: disable AutoPadding
      *
